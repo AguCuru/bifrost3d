@@ -64,12 +64,12 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-	 <dependency>
+	 <!-- <dependency>
 	  <groupId>com.github.luues.boot</groupId>
 	  <artifactId>spring-boot-starter-security</artifactId>
 	  <version>1.0.4.2.RELEASE</version>
 	  <type>jar</type>
-	 </dependency>
+	 </dependency> -->
 	</dependencies>
 
 	<build>

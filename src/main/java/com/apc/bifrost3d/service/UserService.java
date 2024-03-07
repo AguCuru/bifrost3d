@@ -62,10 +62,10 @@ public class UserService implements UserDetailsService {
             e.printStackTrace();
         }*/
 
-        if (!archivo.isEmpty()) {
+        /*if (!archivo.isEmpty()) {
             ImageEntity imagen = imageService.guardar(archivo);
             usuario.setFotoPerfil(imagen);
-        }
+        }*/
 
         usuarioRepositorio.save(usuario);
 

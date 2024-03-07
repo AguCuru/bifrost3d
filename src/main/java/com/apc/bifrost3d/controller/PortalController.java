@@ -31,9 +31,9 @@ public class PortalController {
         return "index.html";
     }
 
-    @GetMapping("/registrar")
-    public String registrar() {
-        return "registrar.html";
+    @GetMapping("/register")
+    public String register() {
+        return "register.html";
 
     }
 
@@ -41,7 +41,7 @@ public class PortalController {
     public String registro(
             @RequestParam String nombreUsuario,
             @RequestParam String nombre,
-            @RequestParam String apellido,
+            /*@RequestParam*/ String apellido,
             @RequestParam String email,
             @RequestParam String password,
             String password2, ModelMap modelo, MultipartFile archivo) {
@@ -76,7 +76,7 @@ public class PortalController {
         return "login.html";
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USUARIO', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/inicio")
     public String inicio(ModelMap modelo, HttpSession session) {
 

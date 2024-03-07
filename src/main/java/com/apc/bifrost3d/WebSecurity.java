@@ -34,6 +34,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
       authorize
         .requestMatchers("/admin/*").hasRole("ADMIN")
         .requestMatchers("/css/*", "/js/*", "/img/*", "/**").permitAll()  
+        
     )
     .formLogin((form) ->  
       form
@@ -41,7 +42,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         .loginProcessingUrl("/logincheck")
         .usernameParameter("email")
         .passwordParameter("password") 
-        .defaultSuccessUrl("/inicio")
+        .defaultSuccessUrl("/")
         .permitAll()
     )
     .logout((logout) ->
