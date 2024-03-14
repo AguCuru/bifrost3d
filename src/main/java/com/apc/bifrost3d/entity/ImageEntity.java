@@ -6,7 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,9 +17,9 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor        
+@AllArgsConstructor
 public class ImageEntity {
-        @Id
+    @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
@@ -25,14 +27,15 @@ public class ImageEntity {
     private String mime;
     private String imageName;
 
-    
-    
-    //lob = que puede ser pesado  // basic lazy puede demorar mucho tiempo y solo lo cargara cuando lo solicit explictamente
-    @Lob 
+    // lob = que puede ser pesado // basic lazy puede demorar mucho tiempo y solo lo
+    // cargara cuando lo solicit explictamente
+    @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Column(columnDefinition="LONGBLOB")
+    @Column(columnDefinition = "LONGBLOB")
     private byte[] contenido;
-    
-   
-    
+
+    @ManyToOne
+    @JoinColumn(name = "productId") // Nombre de la columna en la tabla de imágenes que hace referencia al producto
+    private ProductEntity product;
+
 }

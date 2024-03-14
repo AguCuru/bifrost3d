@@ -1,11 +1,6 @@
 package com.apc.bifrost3d.controller;
 
-import com.apc.bifrost3d.entity.UserEntity;
-import com.apc.bifrost3d.exception.MyException;
-import com.apc.bifrost3d.service.UserService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -15,27 +10,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-@Controller
-@RequestMapping("/")
-public class PortalController {
+import com.apc.bifrost3d.entity.UserEntity;
+import com.apc.bifrost3d.exception.MyException;
+import com.apc.bifrost3d.service.UserService;
 
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+@RequestMapping("/auth")
+public class AuthController {
+    
     @Autowired
     private UserService userService;
 
 //    @Autowired
 //    private JavaMailSender mailSender;
 
-    @GetMapping("/")
-    public String index() {
-
-        return "index.html";
-    }
-
     @GetMapping("/register")
     public String register() {
-        return "register.html";
+        return "auth/register";
 
     }
+
 
     @PostMapping("/registro")
     public String registro(
@@ -59,7 +55,7 @@ public class PortalController {
             modelo.put("apellido", apellido);
             modelo.put("email", email);
             modelo.put("archivo", archivo);
-            return "registrar.html";
+            return "auth/register";
 
         }
 
@@ -73,21 +69,21 @@ public class PortalController {
             modelo.put("error", "Usuario o Contraseña invalidos!");
             session.removeAttribute("usuariosession");
         }
-        return "login.html";
+        return "auth/login";
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @GetMapping("/inicio")
-    public String inicio(ModelMap modelo, HttpSession session) {
+    @GetMapping("/home")
+    public String home(ModelMap modelo, HttpSession session) {
 
         UserEntity usuario = (UserEntity) session.getAttribute("usuariosession");
         if (usuario.getRol().toString().equals("ADMIN")) {
             return "redirect:/admin/dashboard";
         }
-        return "inicio.html";
+        return "home.html";
     }
 
-    /*    @GetMapping("/forgot_password")
+        /*    @GetMapping("/forgot_password")
     public String recuperarContraseñaForm(Model modelo) {
 
         return "password_forgot_form.html";

@@ -1,6 +1,5 @@
 package com.apc.bifrost3d.service;
 
-import com.apc.bifrost3d.entity.ImageEntity;
 import com.apc.bifrost3d.entity.UserEntity;
 import com.apc.bifrost3d.enums.Enumeration.Rol;
 import com.apc.bifrost3d.exception.MyException;
@@ -18,8 +17,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,16 +27,16 @@ import com.apc.bifrost3d.repository.UserRepository;
 public class UserService implements UserDetailsService {
 
     @Autowired
-    private UserRepository usuarioRepositorio;
+    private UserRepository userRepository;
     @Autowired
     private ImageService imageService;
 
     @Transactional
     public void registrar(MultipartFile archivo, String nombreUsuario, String nombre, String apellido,
-              String email, String password, String password2)
+            String email, String password, String password2)
             throws MyException {
 
-        //validar(nombre, apellido, email, password, password2, dni, telefono);
+        // validar(nombre, apellido, email, password, password2, dni, telefono);
         UserEntity usuario = new UserEntity();
         usuario.setNombreUsuario(nombreUsuario);
         usuario.setNombre(nombre);
@@ -53,28 +50,32 @@ public class UserService implements UserDetailsService {
         usuario.setFechaAlta(fechatemp);
 
         // se guarda la fecha de nacimiento que llega por formulario
- /*       try {
-            SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-            Date fechaNac = formato.parse(fechaNacimiento);
-            usuario.setFechaNacimiento(fechaNac);
-        } catch (ParseException e) {
+        /*
+         * try {
+         * SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+         * Date fechaNac = formato.parse(fechaNacimiento);
+         * usuario.setFechaNacimiento(fechaNac);
+         * } catch (ParseException e) {
+         * 
+         * e.printStackTrace();
+         * }
+         */
 
-            e.printStackTrace();
-        }*/
+        /*
+         * if (!archivo.isEmpty()) {
+         * ImageEntity imagen = imageService.guardar(archivo);
+         * usuario.setFotoPerfil(imagen);
+         * }
+         */
 
-        /*if (!archivo.isEmpty()) {
-            ImageEntity imagen = imageService.guardar(archivo);
-            usuario.setFotoPerfil(imagen);
-        }*/
-
-        usuarioRepositorio.save(usuario);
+        userRepository.save(usuario);
 
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        UserEntity usuario = usuarioRepositorio.buscarPorEmail(email);
+        UserEntity usuario = userRepository.buscarPorEmail(email);
 
         if (usuario != null) {
 
@@ -96,6 +97,10 @@ public class UserService implements UserDetailsService {
         } else {
             return null;
         }
+    }
+        @Transactional
+        public void deleteUserById(String userId) {
+        userRepository.deleteById(userId);
     }
 
 }

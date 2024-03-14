@@ -38,7 +38,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     )
     .formLogin((form) ->  
       form
-        .loginPage("/login")
+        .loginPage("/auth/login")
         .loginProcessingUrl("/logincheck")
         .usernameParameter("email")
         .passwordParameter("password") 
@@ -47,8 +47,8 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     )
     .logout((logout) ->
       logout
-        .logoutUrl("/logout")
-        .logoutSuccessUrl("/login")
+        .logoutUrl("/auth/logout")
+        .logoutSuccessUrl("/auth/login")
         .permitAll()
     )
     .csrf((csrf) -> csrf.disable());

@@ -10,11 +10,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.util.Date;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -28,7 +26,7 @@ public class UserEntity {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    protected String id;
+    protected String userId;
     protected String nombreUsuario;
     protected String nombre;
     protected String apellido;

@@ -14,4 +14,6 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     @Query("SELECT u FROM UserEntity u WHERE u.email = :email")
     public UserEntity buscarPorEmail(@Param("email") String email);
 
+    void deleteById(@SuppressWarnings("null") String userId);
+
 }
