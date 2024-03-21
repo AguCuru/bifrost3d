@@ -19,15 +19,22 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
+
+    private String appName = "Bifrost3D |";
+
     
     @Autowired
     private UserService userService;
+
+
 
 //    @Autowired
 //    private JavaMailSender mailSender;
 
     @GetMapping("/register")
-    public String register() {
+    public String register(ModelMap model) {
+        model.addAttribute("pageTitle", appName + " Registro");
+
         return "auth/register";
 
     }
@@ -40,21 +47,21 @@ public class AuthController {
             /*@RequestParam*/ String apellido,
             @RequestParam String email,
             @RequestParam String password,
-            String password2, ModelMap modelo, MultipartFile archivo) {
+            String password2, ModelMap model, MultipartFile archivo) {
 
         try {
             userService.registrar(archivo, nombreUsuario, nombre, apellido, email, password, password2);
-            modelo.put("exito", "Usuario registrado correctamente!");
+            model.put("exito", "Usuario registrado correctamente!");
 
             return "index.html";
         } catch (MyException ex) {
 
-            modelo.put("error", ex.getMessage());
-            modelo.put("nombre", nombreUsuario);
-            modelo.put("nombre", nombre);
-            modelo.put("apellido", apellido);
-            modelo.put("email", email);
-            modelo.put("archivo", archivo);
+            model.put("error", ex.getMessage());
+            model.put("nombre", nombreUsuario);
+            model.put("nombre", nombre);
+            model.put("apellido", apellido);
+            model.put("email", email);
+            model.put("archivo", archivo);
             return "auth/register";
 
         }
@@ -62,11 +69,12 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String login(@RequestParam(required = false) String error, ModelMap modelo, HttpSession session) {
+    public String login(ModelMap model,@RequestParam(required = false) String error, HttpSession session) {
+        model.addAttribute("pageTitle", appName + " Login");
 
         if (error != null) {
 
-            modelo.put("error", "Usuario o Contraseña invalidos!");
+            model.put("error", "Usuario o Contraseña invalidos!");
             session.removeAttribute("usuariosession");
         }
         return "auth/login";
@@ -74,7 +82,7 @@ public class AuthController {
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/home")
-    public String home(ModelMap modelo, HttpSession session) {
+    public String home(ModelMap model, HttpSession session) {
 
         UserEntity usuario = (UserEntity) session.getAttribute("usuariosession");
         if (usuario.getRol().toString().equals("ADMIN")) {

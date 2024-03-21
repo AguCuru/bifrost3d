@@ -1,6 +1,7 @@
 package com.apc.bifrost3d.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -14,29 +15,40 @@ public class MainController {
     // @Autowired
     // private JavaMailSender mailSender;
 
-    @GetMapping("/")
-    public String index() {
+    private String appName = "Bifrost3D |";
 
-        return "index.html";
+    @GetMapping("/")
+    public String index(Model model) {
+        model.addAttribute("pageTitle", appName + " Inicio");
+
+        return "index";
     }
 
     @GetMapping("/home")
-    public String home() {
-
-        return "home.html";
+    public String home(Model model) {
+        model.addAttribute("pageTitle", appName + " Home");
+        return "home";
     }
 
     @GetMapping("/contact")
-    public String contact() {
-
+    public String contact(Model model) {
+        model.addAttribute("pageTitle", appName + " Contact");
         return "contact";
     }
 
     @GetMapping("/faqs")
-    public String product() {
+    public String faqs(Model model) {
+        model.addAttribute("pageTitle", appName + " Faqs");
 
         return "faqs";
     }
+
+    @GetMapping("/about")
+    public String about(Model model) {
+        model.addAttribute("pageTitle", appName + " About");
+
+        return "about";
+    }    
 
     // @GetMapping("/register")
     // public String register() {
