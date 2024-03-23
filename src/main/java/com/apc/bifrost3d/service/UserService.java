@@ -1,5 +1,6 @@
 package com.apc.bifrost3d.service;
 
+import com.apc.bifrost3d.entity.ImageEntity;
 import com.apc.bifrost3d.entity.UserEntity;
 import com.apc.bifrost3d.enums.Enumeration.Rol;
 import com.apc.bifrost3d.exception.MyException;
@@ -7,6 +8,8 @@ import com.apc.bifrost3d.exception.MyException;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,11 +35,17 @@ public class UserService implements UserDetailsService {
     private ImageService imageService;
 
     @Transactional
-    public void registrar(MultipartFile archivo, String nombreUsuario, String nombre, String apellido,
-            String email, String password, String password2)
+    public void registrar(
+            MultipartFile archivo,
+            String nombreUsuario,
+            String nombre,
+            String apellido,
+            String email,
+            String password,
+            String password2)
             throws MyException {
 
-        // validar(nombre, apellido, email, password, password2, dni, telefono);
+        validar(nombreUsuario, nombre, apellido, email, password, password2);
         UserEntity usuario = new UserEntity();
         usuario.setNombreUsuario(nombreUsuario);
         usuario.setNombre(nombre);
@@ -72,6 +81,74 @@ public class UserService implements UserDetailsService {
 
     }
 
+    /* */
+    @Transactional
+    public void updateUser(MultipartFile archivo, String nombreUsuario, String nombre, String apellido, String email,
+            String password, String password2, String userId)
+            throws MyException {
+        Optional<UserEntity> respuesta = userRepository.findById(userId);
+        if (respuesta.isPresent()) {
+
+            UserEntity usuario = respuesta.get();
+            usuario.setNombreUsuario(nombreUsuario);
+            usuario.setApellido(apellido);
+            usuario.setNombre(nombre);
+            usuario.setEmail(email);
+
+            if (usuario.getFotoPerfil() != null && !archivo.isEmpty()) {
+                String idImagen = usuario.getFotoPerfil().getId();
+                ImageEntity imagen = imageService.actualizar(archivo, idImagen);
+                usuario.setFotoPerfil(imagen);
+
+            } else if (usuario.getFotoPerfil() == null && !archivo.isEmpty()) {
+
+                ImageEntity imagen = imageService.guardar(archivo);
+                usuario.setFotoPerfil(imagen);
+            }
+
+            userRepository.save(usuario);
+        }
+
+    }
+
+    private void validar(
+            String nombreUsuario,
+            String nombre,
+            String apellido,
+            String email,
+            String password,
+            String password2) throws MyException {
+
+        if (nombreUsuario.isEmpty()) {
+            throw new MyException("el username no puede ser nulo o estar vacío");
+        }
+
+        if (nombre.isEmpty()) {
+            throw new MyException("el nombre no puede ser nulo o estar vacío");
+        }
+
+        if (apellido.isEmpty() || apellido == null) {
+            throw new MyException("el apellido no puede ser nulo o estar vacío");
+        }
+
+        if (email.isEmpty() || email == null) {
+            throw new MyException("el email no puede ser nulo o estar vacio");
+        }
+        UserEntity respuesta = userRepository.buscarPorEmail(email);
+        if (respuesta != null) {
+            throw new MyException("email ya registrado.");
+        }
+
+        if (password.isEmpty() || password == null || password.length() <= 5) {
+            throw new MyException("La contraseña no puede estar vacía, y debe tener más de 5 dígitos");
+        }
+
+        if (!password.equals(password2)) {
+            throw new MyException("Las contraseñas ingresadas deben ser iguales");
+        }
+
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
@@ -79,7 +156,7 @@ public class UserService implements UserDetailsService {
 
         if (usuario != null) {
 
-            List<GrantedAuthority> permisos = new ArrayList();
+            List<GrantedAuthority> permisos = new ArrayList<>();
 
             GrantedAuthority p = new SimpleGrantedAuthority("ROLE_" + usuario.getRol().toString());
 
@@ -98,9 +175,20 @@ public class UserService implements UserDetailsService {
             return null;
         }
     }
-        @Transactional
-        public void deleteUserById(String userId) {
+
+    @Transactional
+    public void deleteUserById(String userId) {
         userRepository.deleteById(userId);
+    }
+
+    @SuppressWarnings("null")
+    public UserEntity getOne(String userId) {
+        Optional<UserEntity> optionalUsuario = userRepository.findById(userId);
+        return optionalUsuario.orElse(null); // Retorna el Usuario si está presente, o null si no lo está
+    }
+
+    public UserEntity findByUsername(String nombreUsuario) {
+        return userRepository.findByUsername(nombreUsuario);
     }
 
 }

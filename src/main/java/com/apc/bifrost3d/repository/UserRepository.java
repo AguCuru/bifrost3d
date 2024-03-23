@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-
-
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, String> {
 
@@ -15,5 +13,10 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     public UserEntity buscarPorEmail(@Param("email") String email);
 
     void deleteById(@SuppressWarnings("null") String userId);
+
+    void findByUserId(String userId);
+
+    @Query("SELECT u FROM UserEntity u WHERE u.nombreUsuario = :nombreUsuario")
+    public UserEntity findByUsername(@Param("nombreUsuario") String nombreUsuario);
 
 }
