@@ -1,72 +1,50 @@
 <!DOCTYPE html>
 
-<html
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
->
-  <head th:replace="~{/fragments/head :: head}"></head>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-  <body>
-    <header th:replace="~{/fragments/header :: header}"></header>
-    <div class="container">
-      <h2>Crear Producto</h2>
-      <!-- Mostrar mensajes de éxito o error -->
-      <div th:if="${successMessage}" class="alert alert-success" role="alert">
-        <p th:text="${successMessage}"></p>
-      </div>
-      <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
-        <p th:text="${errorMessage}"></p>
-      </div>
-      <!-- Formulario para crear producto -->
+<head th:replace="~{/fragments/head :: head}"></head>
 
-      <form
-        th:action="@{/admin/product/create}"
-        method="POST"
-        enctype="multipart/form-data"
-      >
-        <div class="form-group">
-          <label for="productName">Nombre del Producto:</label>
-          <input
-            type="text"
-            class="form-control"
-            id="productName"
-            name="productName"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="productDescription">Descripción del Producto:</label>
-          <textarea
-            class="form-control"
-            id="productDescription"
-            name="productDescription"
-            rows="3"
-            required
-          ></textarea>
-        </div>
-        <div class="form-group">
-          <label for="productStock">Stock del Producto:</label>
-          <input
-            type="number"
-            class="form-control"
-            id="productStock"
-            name="productStock"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="archivo">Imagen del Producto:</label>
-          <input
-            type="file"
-            class="form-control-file"
-            id="archivo"
-            name="archivo"
-          />
-        </div>
-        <button type="submit" class="btn btn-primary">Crear Producto</button>
-      </form>
+<body>
+  <header th:replace="~{/fragments/header :: header}"></header>
+  <div class="container">
+    <h2>Crear Producto</h2>
+    <!-- Mostrar mensajes de éxito o error -->
+    <div th:if="${successMessage}" class="alert alert-success" role="alert">
+      <p th:text="${successMessage}"></p>
     </div>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+      <p th:text="${errorMessage}"></p>
+    </div>
+    <!-- Formulario para crear producto -->
 
-    <footer th:replace="~{/fragments/footer :: footer}"></footer>
-  </body>
+    <form th:action="@{/admin/product/create}" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="productName">Nombre del Producto:</label>
+        <input type="text" class="form-control" id="productName" name="productName" required />
+      </div>
+      <div class="form-group">
+        <label for="productDescription">Descripción del Producto:</label>
+        <textarea class="form-control" id="productDescription" name="productDescription" rows="3" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="productStock">Stock del Producto:</label>
+        <input type="number" class="form-control" id="productStock" name="productStock" required />
+      </div>
+      <div class="form-group">
+        <label for="productPrice">Precio del Producto: $</label>
+        <input type="text" class="form-control" id="productPrice" name="productPrice" pattern="[0-9]+(\.[0-9]+)?"
+          title="Debe ser un número decimal" required />
+      </div>
+
+      <div class="form-group">
+        <label for="archivo">Imagen del Producto:</label>
+        <input type="file" class="form-control-file" id="archivo" name="archivo" />
+      </div>
+      <button type="submit" class="btn btn-primary">Crear Producto</button>
+    </form>
+  </div>
+
+  <footer th:replace="~{/fragments/footer :: footer}"></footer>
+</body>
+
 </html>

@@ -1,6 +1,6 @@
 package com.apc.bifrost3d.entity;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +32,7 @@ public class ProductEntity {
     protected String productName;
     protected String productDescription;
     protected Integer productStock;
+    protected BigDecimal productPrice;
     protected boolean productEstado;
     @Temporal(TemporalType.DATE)
     protected Date fechaAlta;

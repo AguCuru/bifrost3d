@@ -1,5 +1,6 @@
 package com.apc.bifrost3d.service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -28,13 +29,15 @@ public class ProductService {
             MultipartFile archivo,
             String productName,
             String productDescription,
-            Integer productStock)
+            Integer productStock,
+            BigDecimal productPrice)
             throws MyException {
 
         ProductEntity product = new ProductEntity();
         product.setProductName(productName);
         product.setProductDescription(productDescription);
         product.setProductStock(productStock);
+        product.setProductPrice(productPrice);
         product.setProductEstado(true);
         Date fechatemp = new Date();
         product.setFechaAlta(fechatemp);
@@ -55,6 +58,13 @@ public class ProductService {
         } catch (Exception e) {
             throw new MyException("Error al guardar el producto", e);
         }
+    }
+
+    @Transactional
+    public void updateProduct(
+            MultipartFile archivo,
+            String productName) {
+
     }
 
     public List<ProductEntity> productList() {

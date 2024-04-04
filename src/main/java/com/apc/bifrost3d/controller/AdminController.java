@@ -1,8 +1,10 @@
 package com.apc.bifrost3d.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/admin")
 public class AdminController {
 
@@ -28,6 +31,12 @@ public class AdminController {
 
     @Autowired
     private ProductService productService;
+
+    @GetMapping("/dashboard")
+    public String dashboard(ModelMap model) {
+        model.addAttribute("pageTitle", "Dashboard");
+        return "admin/dashboard";
+    }
 
     @GetMapping("/productos")
     public String ProductList(ModelMap model) {
@@ -54,9 +63,9 @@ public class AdminController {
     // Este método maneja la solicitud POST para crear un producto
     @PostMapping("/product/create")
     public String createProduct(MultipartFile archivo, String productName, String productDescription,
-            Integer productStock, Model model) {
+            Integer productStock, BigDecimal productPrice, Model model) {
         try {
-            productService.createProduct(archivo, productName, productDescription, productStock);
+            productService.createProduct(archivo, productName, productDescription, productStock, productPrice);
             model.addAttribute("successMessage", "¡Producto creado correctamente!");
         } catch (MyException e) {
             model.addAttribute("errorMessage", "Error al crear el producto: " + e.getMessage());
