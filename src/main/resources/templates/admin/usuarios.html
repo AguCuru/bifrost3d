@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head th:replace="~{/fragments/head :: head}"></head>
+
+  <body>
+    <header th:replace="~{/fragments/header :: header}"></header>
+    <h1>Usuarios Registrados</h1>
+    <table class="table table-striped">
+      <thead class="thead-dark">
+        <tr>
+          <th>User ID</th>
+          <th>Nombre de usuario</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Email</th>
+          <th>Estado</th>
+          <th>Fecha de alta</th>
+          <th>Rol</th>
+          <th>Eliminar</th>
+          <!-- Agrega más columnas según sea necesario -->
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Iterar sobre la lista de usuarios -->
+        <tr th:each="usuario : ${usuarios}">
+          <td th:text="${usuario.userId}">User ID</td>
+          <td th:text="${usuario.nombreUsuario}">Nombre de usuario</td>
+          <td th:text="${usuario.nombre}">Nombre</td>
+          <td th:text="${usuario.apellido}">Apellido</td>
+          <td th:text="${usuario.email}">Email</td>
+          <td th:text="${usuario.estado}">Estado</td>
+          <td th:text="${usuario.fechaAlta}">Fecha de alta</td>
+          <td th:text="${usuario.rol}">Rol</td>
+          <td>
+            <!-- Verifica si el usuario tiene una foto de perfil -->
+            <img
+              th:if="${usuario.fotoPerfil != null}"
+              th:src="@{/imagen/perfil/__${usuario.userId}__}"
+              alt="Foto de perfil"
+              class="img-fluid rounded-circle"
+              style="max-width: 50px; height: auto"
+            />
+            <!-- Si no hay foto de perfil, muestra un marcador de posición o un mensaje alternativo -->
+            <span th:unless="${usuario.fotoPerfil != null}">Sin foto</span>
+          </td>
+          <td>
+            <form
+              th:action="@{'/admin/eliminar/' + ${usuario.userId}}"
+              method="post"
+            >
+              <button type="submit" class="btn fa-solid fa-trash-can"></button>
+            </form>
+          </td>
+
+          <!-- Agrega más columnas según sea necesario -->
+        </tr>
+      </tbody>
+    </table>
+
+    <footer th:replace="~{/fragments/footer :: footer}"></footer>
+  </body>
+</html>

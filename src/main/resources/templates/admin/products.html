@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head th:replace="~{/fragments/head :: head}"></head>
+
+  <body>
+    <header th:replace="~{/fragments/header :: header}"></header>
+    <h1>Lista de Productos</h1>
+    <table class="table table-striped">
+      <thead class="thead-dark">
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Stock</th>
+          <th>Fecha de alta</th>
+          <th>Fotos</th>
+          <th>Eliminar</th>
+          <!-- Agrega más columnas según sea necesario -->
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Iterar sobre la lista de productos -->
+        <tr th:each="product : ${products}">
+          <td th:text="${product.productId}">ID del producto</td>
+          <td th:text="${product.productName}">Nombre del producto</td>
+          <td th:text="${product.productDescription}">
+            Descripción del producto
+          </td>
+          <td th:text="${product.productStock}">Stock del producto</td>
+          <td th:text="${product.fechaAlta}">Fecha de alta</td>
+          <td>
+            <!-- Verifica si el producto tiene imágenes asociadas -->
+            <div th:if="${product.productImages != null}">
+              <!-- Iterar sobre las imágenes del producto -->
+              <div th:each="image : ${product.productImages}">
+                <!-- Mostrar la imagen -->
+                <img
+                  th:src="@{/imagen/producto/__${image.product.productId}__}"
+                  alt="Foto Producto"
+                  class="img-fluid rounded-circle"
+                  style="max-width: 50px; height: auto"
+                />
+              </div>
+            </div>
+            <!-- Si no hay imágenes asociadas, mostrar un mensaje -->
+            <span th:unless="${product.productImages != null}">Sin foto</span>
+          </td>
+          <td>
+            <!-- Formulario para eliminar el producto -->
+            <form
+              th:action="@{'/admin/producto/eliminar/' + ${product.productId}}"
+              method="post"
+            >
+              <button type="submit" class="btn fa-solid fa-trash-can"></button>
+            </form>
+          </td>
+          <!-- Agregar más columnas según sea necesario -->
+        </tr>
+      </tbody>
+    </table>
+    <footer th:replace="~{/fragments/footer :: footer}"></footer>
+  </body>
+</html>
