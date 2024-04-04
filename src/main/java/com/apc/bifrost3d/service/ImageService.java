@@ -1,9 +1,11 @@
 package com.apc.bifrost3d.service;
 
 import com.apc.bifrost3d.entity.ImageEntity;
+import com.apc.bifrost3d.entity.ProductEntity;
 import com.apc.bifrost3d.exception.MyException;
 import com.apc.bifrost3d.repository.ImageRepository;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ class ImageService {
     @Autowired
     private ImageRepository imageRepository;
 
+    /* Guarda imagen de perfil usuario */
     public ImageEntity guardar(MultipartFile archivo) throws MyException {
         if (archivo != null) {
             try {
@@ -31,6 +34,25 @@ class ImageService {
             }
         }
         return null;
+    }
+
+    /* Guarda lista de imagenes de un Producto */
+    public List<ImageEntity> guardarImageProduct(String productId, List<MultipartFile> archivos) throws MyException {
+        List<ImageEntity> imagenesGuardadas = new ArrayList<>();
+        try {
+            for (MultipartFile archivo : archivos) {
+                ImageEntity imagen = new ImageEntity();
+                imagen.setMime(archivo.getContentType());
+                imagen.setImageName(archivo.getOriginalFilename());
+                imagen.setContenido(archivo.getBytes());
+
+                // Guardar la imagen en la base de datos
+                imagenesGuardadas.add(imageRepository.save(imagen));
+            }
+        } catch (IOException e) {
+            throw new MyException("Error al guardar las imágenes", e);
+        }
+        return imagenesGuardadas;
     }
 
     public ImageEntity actualizar(MultipartFile archivo, String idImagen) throws MyException {

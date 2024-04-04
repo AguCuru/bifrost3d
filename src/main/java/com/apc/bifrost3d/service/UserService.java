@@ -34,6 +34,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private ImageService imageService;
 
+    /* Registra un usuario */
     @Transactional
     public void registrar(
             MultipartFile archivo,
@@ -70,29 +71,35 @@ public class UserService implements UserDetailsService {
          * }
          */
 
-        /*
-         * if (!archivo.isEmpty()) {
-         * ImageEntity imagen = imageService.guardar(archivo);
-         * usuario.setFotoPerfil(imagen);
-         * }
-         */
+        if (!archivo.isEmpty()) {
+            ImageEntity imagen = imageService.guardar(archivo);
+            usuario.setFotoPerfil(imagen);
+        }
 
         userRepository.save(usuario);
 
     }
 
-    /* */
+    /* Actualiza datos usuario */
     @Transactional
-    public void updateUser(MultipartFile archivo, String nombreUsuario, String nombre, String apellido, String email,
-            String password, String password2, String userId)
+    public void updateUser(
+            MultipartFile archivo,
+            String nombreUsuario,
+            String nombre,
+            String apellido,
+            String email,
+            String password,
+            String password2,
+            String userId)
             throws MyException {
+        @SuppressWarnings("null")
         Optional<UserEntity> respuesta = userRepository.findById(userId);
         if (respuesta.isPresent()) {
 
             UserEntity usuario = respuesta.get();
             usuario.setNombreUsuario(nombreUsuario);
-            usuario.setApellido(apellido);
             usuario.setNombre(nombre);
+            usuario.setApellido(apellido);
             usuario.setEmail(email);
 
             if (usuario.getFotoPerfil() != null && !archivo.isEmpty()) {
@@ -120,31 +127,31 @@ public class UserService implements UserDetailsService {
             String password2) throws MyException {
 
         if (nombreUsuario.isEmpty()) {
-            throw new MyException("el username no puede ser nulo o estar vacío");
+            throw new MyException(" el username no puede ser nulo o estar vacío", null);
         }
 
         if (nombre.isEmpty()) {
-            throw new MyException("el nombre no puede ser nulo o estar vacío");
+            throw new MyException(" el nombre no puede ser nulo o estar vacío", null);
         }
 
         if (apellido.isEmpty() || apellido == null) {
-            throw new MyException("el apellido no puede ser nulo o estar vacío");
+            throw new MyException(" el apellido no puede ser nulo o estar vacío", null);
         }
 
         if (email.isEmpty() || email == null) {
-            throw new MyException("el email no puede ser nulo o estar vacio");
+            throw new MyException(" el email no puede ser nulo o estar vacio", null);
         }
         UserEntity respuesta = userRepository.buscarPorEmail(email);
         if (respuesta != null) {
-            throw new MyException("email ya registrado.");
+            throw new MyException(" email ya registrado.", null);
         }
 
         if (password.isEmpty() || password == null || password.length() <= 5) {
-            throw new MyException("La contraseña no puede estar vacía, y debe tener más de 5 dígitos");
+            throw new MyException(" La contraseña no puede estar vacía, y debe tener más de 5 dígitos", null);
         }
 
         if (!password.equals(password2)) {
-            throw new MyException("Las contraseñas ingresadas deben ser iguales");
+            throw new MyException(" Las contraseñas ingresadas deben ser iguales", null);
         }
 
     }
@@ -189,6 +196,10 @@ public class UserService implements UserDetailsService {
 
     public UserEntity findByUsername(String nombreUsuario) {
         return userRepository.findByUsername(nombreUsuario);
+    }
+
+    public UserEntity buscarPorEmail(String email) {
+        return userRepository.buscarPorEmail(email);
     }
 
 }

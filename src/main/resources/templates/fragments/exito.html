@@ -1,0 +1,13 @@
+<div th:fragment="exito">
+  <div
+    th:if="${exito != null}"
+    class="card text-black bg-success mb-3 mt-3 mensajeExito"
+  >
+    <div
+      class="card-body d-flex flex-column align-items-center justify-content-center"
+    >
+      <h5 class="card-title my-4 text-center">Éxito!</h5>
+      <p class="card-text text-center mt-2" th:text="${exito}"></p>
+    </div>
+  </div>
+</div>

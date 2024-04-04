@@ -20,8 +20,6 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private String appName = "Bifrost3D |";
-
     @Autowired
     private UserService userService;
 
@@ -30,7 +28,7 @@ public class AuthController {
 
     @GetMapping("/register")
     public String register(ModelMap model) {
-        model.addAttribute("pageTitle", appName + " Registro");
+        model.addAttribute("pageTitle", " Registro");
 
         return "auth/register";
 
@@ -51,7 +49,7 @@ public class AuthController {
             userService.registrar(archivo, nombreUsuario, nombre, apellido, email, password, password2);
             model.put("exito", "Usuario registrado correctamente!");
 
-            return "index.html";
+            return "auth/login";
         } catch (MyException ex) {
 
             model.put("error", ex.getMessage());
@@ -68,7 +66,7 @@ public class AuthController {
 
     @GetMapping("/login")
     public String login(ModelMap model, @RequestParam(required = false) String error, HttpSession session) {
-        model.addAttribute("pageTitle", appName + " Login");
+        model.addAttribute("pageTitle", " Login");
 
         if (error != null) {
 

@@ -9,11 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequestMapping("/shop")
 public class ShopController {
 
-    private String appName = "Bifrost3D |";
-
     @GetMapping("/items")
     public String shop(ModelMap model) {
-        model.addAttribute("pageTitle", appName + " Items");
+        model.addAttribute("pageTitle", " Items");
 
         return "shop/items";
     }

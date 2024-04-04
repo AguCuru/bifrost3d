@@ -34,8 +34,8 @@ public class ImageEntity {
     @Column(columnDefinition = "LONGBLOB")
     private byte[] contenido;
 
-    @ManyToOne
-    @JoinColumn(name = "productId") // Nombre de la columna en la tabla de imágenes que hace referencia al producto
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_product")
     private ProductEntity product;
 
 }

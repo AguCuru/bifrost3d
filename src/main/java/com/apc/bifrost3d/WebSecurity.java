@@ -30,6 +30,7 @@ public class WebSecurity {
     http
         .authorizeHttpRequests((authorize) -> authorize
             .requestMatchers("/admin/*").hasRole("ADMIN")
+            //.requestMatchers("/user/*").hasRole("USER")
             .requestMatchers("/css/*", "/js/*", "/img/*", "/**").permitAll()
 
         )

@@ -15,40 +15,38 @@ public class MainController {
     // @Autowired
     // private JavaMailSender mailSender;
 
-    private String appName = "Bifrost3D |";
-
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("pageTitle", appName + " Inicio");
+        model.addAttribute("pageTitle", " Inicio");
 
         return "index";
     }
 
     @GetMapping("/home")
     public String home(Model model) {
-        model.addAttribute("pageTitle", appName + " Home");
+        model.addAttribute("pageTitle", " Home");
         return "home";
     }
 
     @GetMapping("/contact")
     public String contact(Model model) {
-        model.addAttribute("pageTitle", appName + " Contact");
+        model.addAttribute("pageTitle", " Contact");
         return "contact";
     }
 
     @GetMapping("/faqs")
     public String faqs(Model model) {
-        model.addAttribute("pageTitle", appName + " Faqs");
+        model.addAttribute("pageTitle", " Faqs");
 
         return "faqs";
     }
 
     @GetMapping("/about")
     public String about(Model model) {
-        model.addAttribute("pageTitle", appName + " About");
+        model.addAttribute("pageTitle", " About");
 
         return "about";
-    }    
+    }
 
     // @GetMapping("/register")
     // public String register() {
