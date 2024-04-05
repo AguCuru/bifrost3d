@@ -26,7 +26,7 @@ public class ProductService {
 
     @Transactional
     public void createProduct(
-            MultipartFile archivo,
+            MultipartFile[] archivos,
             String productName,
             String productDescription,
             Integer productStock,
@@ -46,14 +46,14 @@ public class ProductService {
             // Guardar el producto primero para obtener su ID
             ProductEntity savedProduct = productRepository.save(product);
 
-            // Si el producto se guardó correctamente y hay un archivo adjunto, guardar la
-            // imagen
-            if (savedProduct != null && !archivo.isEmpty()) {
-                ImageEntity imagen = imageService.guardar(archivo);
+            // Guardar las imágenes asociadas al producto
+            for (MultipartFile archivo : archivos) {
+                if (!archivo.isEmpty()) {
+                    // Guardar la imagen y asociarla con el producto
+                    ImageEntity imagen = imageService.guardar(archivo);
+                    imagen.setProduct(savedProduct);
 
-                // Asociar la imagen con el producto utilizando el ID del producto obtenido
-                imagen.setProduct(savedProduct);
-
+                }
             }
         } catch (Exception e) {
             throw new MyException("Error al guardar el producto", e);
@@ -71,7 +71,6 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    @SuppressWarnings("null")
     public ProductEntity getProductById(String productId) {
         Optional<ProductEntity> optionalProduct = productRepository.findById(productId);
         return optionalProduct.orElse(null); // Retorna el Usuario si está presente, o null si no lo está

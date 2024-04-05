@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.apc.bifrost3d.entity.ProductEntity;
@@ -62,15 +63,20 @@ public class AdminController {
 
     // Este método maneja la solicitud POST para crear un producto
     @PostMapping("/product/create")
-    public String createProduct(MultipartFile archivo, String productName, String productDescription,
-            Integer productStock, BigDecimal productPrice, Model model) {
+    public String createProduct(
+            @RequestParam("archivos") MultipartFile[] archivos,
+            @RequestParam("productName") String productName,
+            @RequestParam("productDescription") String productDescription,
+            @RequestParam("productStock") Integer productStock,
+            @RequestParam("productPrice") BigDecimal productPrice,
+            Model model) {
         try {
-            productService.createProduct(archivo, productName, productDescription, productStock, productPrice);
+            productService.createProduct(archivos, productName, productDescription, productStock, productPrice);
             model.addAttribute("successMessage", "¡Producto creado correctamente!");
         } catch (MyException e) {
             model.addAttribute("errorMessage", "Error al crear el producto: " + e.getMessage());
         }
-        return "admin/create-product"; // Nombre de la vista Thymeleaf
+        return "redirect:/admin/productos"; // Nombre de la vista Thymeleaf
     }
 
     @PostMapping("/eliminar/{userId}")
