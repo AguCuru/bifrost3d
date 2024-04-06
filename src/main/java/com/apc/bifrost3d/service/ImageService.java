@@ -25,7 +25,7 @@ class ImageService {
             try {
                 ImageEntity imagen = new ImageEntity();
                 imagen.setMime(archivo.getContentType());
-                imagen.setImageName(archivo.getName());
+                imagen.setImageName(archivo.getOriginalFilename());
                 imagen.setContenido(archivo.getBytes());
                 return imageRepository.save(imagen);
 
