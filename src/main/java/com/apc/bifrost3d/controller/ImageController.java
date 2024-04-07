@@ -41,19 +41,42 @@ public class ImageController {
         return new ResponseEntity<>(imagen, headers, HttpStatus.OK);
     }
 
-    @GetMapping("/producto/{productId}")
+    @GetMapping("/producto/{productId}/imagen")
     public ResponseEntity<byte[]> getImageForProduct(@PathVariable String productId) {
         ProductEntity product = productService.getProductById(productId);
         if (product == null || product.getProductImages().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        // Suponiendo que cada producto tiene una sola imagen, obtén la primera imagen
-        ImageEntity image = product.getProductImages().get(0);
+        List<ImageEntity> images = product.getProductImages();
+
+        // Verifica la existencia de imágenes asociadas al producto
+        if (images == null || images.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Obtén la primera imagen del producto
+        ImageEntity image = images.get(0);
         byte[] imageContent = image.getContenido();
 
+        // Verifica si el contenido de la imagen es nulo o vacío
+        if (imageContent == null || imageContent.length == 0) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Prepara los encabezados de respuesta
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG); // Suponiendo que las imágenes son JPEG, cambia si es necesario
+        // Establece el tipo de contenido basado en el tipo de imagen
+        String contentType = image.getMime();
+        if (contentType != null && !contentType.isEmpty()) {
+            headers.setContentType(MediaType.parseMediaType(contentType));
+        } else {
+            // Si no se encuentra el tipo de contenido, establece un tipo de contenido
+            // genérico
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        }
+
+        // Devuelve la imagen con los encabezados y el estado HTTP adecuados
         return new ResponseEntity<>(imageContent, headers, HttpStatus.OK);
     }
 

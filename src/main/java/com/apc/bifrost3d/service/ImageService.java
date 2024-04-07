@@ -1,7 +1,6 @@
 package com.apc.bifrost3d.service;
 
 import com.apc.bifrost3d.entity.ImageEntity;
-import com.apc.bifrost3d.entity.ProductEntity;
 import com.apc.bifrost3d.exception.MyException;
 import com.apc.bifrost3d.repository.ImageRepository;
 import java.io.IOException;
@@ -14,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-class ImageService {
+public class ImageService {
 
     @Autowired
     private ImageRepository imageRepository;
@@ -30,7 +29,7 @@ class ImageService {
                 return imageRepository.save(imagen);
 
             } catch (IOException e) {
-                System.err.println(e.getMessage());
+                throw new MyException("Error al guardar la imagen", e);
             }
         }
         return null;
@@ -45,8 +44,6 @@ class ImageService {
                 imagen.setMime(archivo.getContentType());
                 imagen.setImageName(archivo.getOriginalFilename());
                 imagen.setContenido(archivo.getBytes());
-
-                // Guardar la imagen en la base de datos
                 imagenesGuardadas.add(imageRepository.save(imagen));
             }
         } catch (IOException e) {

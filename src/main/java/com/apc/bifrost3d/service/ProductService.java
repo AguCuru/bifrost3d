@@ -21,44 +21,26 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    @Autowired
-    private ImageService imageService;
-
-    @Transactional
-    public void createProduct(
-            MultipartFile[] archivos,
-            String productName,
-            String productDescription,
-            Integer productStock,
-            BigDecimal productPrice)
-            throws MyException {
-
+    public ProductEntity createProduct(String productName, String productDescription, Integer productStock,
+            BigDecimal productPrice, List<ImageEntity> productImages) {
         ProductEntity product = new ProductEntity();
         product.setProductName(productName);
         product.setProductDescription(productDescription);
         product.setProductStock(productStock);
         product.setProductPrice(productPrice);
+        product.setProductImages(productImages);
+        product.setFechaAlta(new Date());
         product.setProductEstado(true);
-        Date fechatemp = new Date();
-        product.setFechaAlta(fechatemp);
-
-        try {
-            // Guardar el producto primero para obtener su ID
-            ProductEntity savedProduct = productRepository.save(product);
-
-            // Guardar las imágenes asociadas al producto
-            for (MultipartFile archivo : archivos) {
-                if (!archivo.isEmpty()) {
-                    // Guardar la imagen y asociarla con el producto
-                    ImageEntity imagen = imageService.guardar(archivo);
-                    imagen.setProduct(savedProduct);
-
-                }
-            }
-        } catch (Exception e) {
-            throw new MyException("Error al guardar el producto", e);
+        // Establecer la relación inversa en las imágenes
+        for (ImageEntity image : productImages) {
+            image.setProduct(product);
         }
+
+        // Guardar el producto con las imágenes asociadas
+        return productRepository.save(product);
     }
+
+    // Otros métodos de servicio para manejar productos
 
     @Transactional
     public void updateProduct(

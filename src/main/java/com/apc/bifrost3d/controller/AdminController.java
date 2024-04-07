@@ -1,6 +1,7 @@
 package com.apc.bifrost3d.controller;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.apc.bifrost3d.entity.ImageEntity;
 import com.apc.bifrost3d.entity.ProductEntity;
 import com.apc.bifrost3d.entity.UserEntity;
 import com.apc.bifrost3d.exception.MyException;
 import com.apc.bifrost3d.service.AdminService;
+import com.apc.bifrost3d.service.ImageService;
 import com.apc.bifrost3d.service.ProductService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +35,9 @@ public class AdminController {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+
+    private ImageService imageService;
 
     @GetMapping("/dashboard")
     public String dashboard(ModelMap model) {
@@ -63,7 +69,7 @@ public class AdminController {
 
     // Este método maneja la solicitud POST para crear un producto
     @PostMapping("/product/create")
-    public String createProduct(
+    public String createProduct(String productId,
             @RequestParam("archivos") MultipartFile[] archivos,
             @RequestParam("productName") String productName,
             @RequestParam("productDescription") String productDescription,
@@ -71,7 +77,12 @@ public class AdminController {
             @RequestParam("productPrice") BigDecimal productPrice,
             Model model) {
         try {
-            productService.createProduct(archivos, productName, productDescription, productStock, productPrice);
+            List<ImageEntity> imagenesGuardadas = imageService.guardarImageProduct(productId, Arrays.asList(archivos));
+
+            // Crear el producto y asociar las imágenes
+            productService.createProduct(productName, productDescription, productStock, productPrice,
+                    imagenesGuardadas);
+
             model.addAttribute("successMessage", "¡Producto creado correctamente!");
         } catch (MyException e) {
             model.addAttribute("errorMessage", "Error al crear el producto: " + e.getMessage());
