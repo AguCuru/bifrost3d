@@ -20,7 +20,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Data
 @Inheritance(strategy = InheritanceType.JOINED)
-//@Table(name = "User")
+// @Table(name = "User")
 public class UserEntity {
 
     @Id

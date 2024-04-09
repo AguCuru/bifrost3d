@@ -92,7 +92,7 @@ public class UserService implements UserDetailsService {
             String password2,
             String userId)
             throws MyException {
-        @SuppressWarnings("null")
+        @SuppressWarnings("")
         Optional<UserEntity> respuesta = userRepository.findById(userId);
         if (respuesta.isPresent()) {
 

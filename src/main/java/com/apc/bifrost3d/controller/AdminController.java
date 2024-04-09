@@ -1,5 +1,6 @@
 package com.apc.bifrost3d.controller;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -68,17 +69,41 @@ public class AdminController {
     }
 
     // Este método maneja la solicitud POST para crear un producto
+    // @PostMapping("/product/create")
+    // public String createProduct(String productId,
+    // @RequestParam("archivos") MultipartFile[] archivos,
+    // @RequestParam("productName") String productName,
+    // @RequestParam("productDescription") String productDescription,
+    // @RequestParam("productStock") Integer productStock,
+    // @RequestParam("productPrice") BigDecimal productPrice,
+    // Model model) {
+    // try {
+    // List<ImageEntity> imagenesGuardadas =
+    // imageService.guardarImageProduct(productId, Arrays.asList(archivos));
+
+    // // Crear el producto y asociar las imágenes
+    // productService.createProduct(productName, productDescription, productStock,
+    // productPrice,
+    // imagenesGuardadas);
+
+    // model.addAttribute("successMessage", "¡Producto creado correctamente!");
+    // } catch (MyException e) {
+    // model.addAttribute("errorMessage", "Error al crear el producto: " +
+    // e.getMessage());
+    // }
+    // return "redirect:/admin/productos"; // Nombre de la vista Thymeleaf
+    // }
+
     @PostMapping("/product/create")
-    public String createProduct(String productId,
-            @RequestParam("archivos") MultipartFile[] archivos,
-            @RequestParam("productName") String productName,
+    public String createProduct(@RequestParam("productName") String productName,
             @RequestParam("productDescription") String productDescription,
             @RequestParam("productStock") Integer productStock,
             @RequestParam("productPrice") BigDecimal productPrice,
+            @RequestParam("archivos") MultipartFile[] archivos,
             Model model) {
-        try {
-            List<ImageEntity> imagenesGuardadas = imageService.guardarImageProduct(productId, Arrays.asList(archivos));
 
+        try {
+            List<ImageEntity> imagenesGuardadas = imageService.guardarImagenes(Arrays.asList(archivos));
             // Crear el producto y asociar las imágenes
             productService.createProduct(productName, productDescription, productStock, productPrice,
                     imagenesGuardadas);
@@ -90,13 +115,46 @@ public class AdminController {
         return "redirect:/admin/productos"; // Nombre de la vista Thymeleaf
     }
 
+    @GetMapping("/product/{productId}")
+    public String updateProduct(Model model, String productId) {
+        ProductEntity product = productService.getProductById(productId);
+
+        model.addAttribute("product", product);
+
+        return "admin/productos";
+    }
+
+    @PostMapping("/product/update/{productId}")
+    public String updateProduct(@PathVariable String productId,
+            @RequestParam("productName") String productName,
+            @RequestParam("productDescription") String productDescription,
+            @RequestParam("productStock") Integer productStock,
+            @RequestParam("productPrice") BigDecimal productPrice,
+            @RequestParam("archivos") MultipartFile[] archivos,
+            Model model) throws IOException {
+        try {
+
+            // Convertir los MultipartFiles a ImageEntity
+            List<ImageEntity> productImages = imageService.convertToImageEntities(archivos);
+
+            // Procesar la solicitud de actualización del producto
+            productService.updateProduct(productId, productName, productDescription, productStock, productPrice,
+                    productImages);
+
+            model.addAttribute("successMessage", "¡Producto actualizado correctamente!");
+        } catch (MyException e) {
+            model.addAttribute("errorMessage", "Error al actualizar el producto: " + e.getMessage());
+        }
+        return "redirect:/admin/productos"; // Redirigir a la página de administración de productos
+    }
+
     @PostMapping("/eliminar/{userId}")
     public String deleteUser(@PathVariable String userId) {
         adminService.deleteUserById(userId);
         return "redirect:/admin/usuarios";
     }
 
-    @PostMapping("/producto/eliminar/{productId}")
+    @PostMapping("/product/eliminar/{productId}")
     public String deleteProduct(@PathVariable String productId) {
         adminService.deleteProductById(productId);
         return "redirect:/admin/productos";

@@ -1,43 +1,34 @@
-// package com.apc.bifrost3d.controller;
+package com.apc.bifrost3d.controller;
 
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.stereotype.Controller;
-// import org.springframework.ui.Model;
-// import org.springframework.web.bind.annotation.*;
-// import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import com.apc.bifrost3d.entity.ImageEntity;
+import com.apc.bifrost3d.entity.ProductEntity;
+import com.apc.bifrost3d.service.ProductService;
 
-// import com.apc.bifrost3d.entity.ProductEntity;
-// import com.apc.bifrost3d.exception.MyException;
-// import com.apc.bifrost3d.service.ProductService;
+import java.util.List;
 
-// import java.io.IOException;
-// import java.math.BigDecimal;
-// import java.util.Date;
+@Controller
+@RequestMapping("/productos")
+public class ProductController {
 
-// @Controller
-// @RequestMapping("/productos")
-// public class ProductController {
+    @Autowired
+    private ProductService productService;
 
-// @Autowired
-// private ProductService productService;
+    @GetMapping("/product/{productId}")
+    public String showProductDetail(@PathVariable("productId") String productId, Model model) {
+        model.addAttribute("pageTitle", "Producto");
 
-// @GetMapping("/crear")
-// public String mostrarFormularioCreacion(Model model) {
-// model.addAttribute("product", new ProductEntity());
-// return "productos/crear-producto";
-// }
+        // Obtener el producto y sus imágenes
+        ProductEntity product = productService.getProductById(productId);
+        List<ImageEntity> productImages = productService.getProductImages(productId);
 
-// @PostMapping("/crear")
-// public String crearProducto(MultipartFile[] archivos,
-// String productName,
-// String productDescription,
-// Integer productStock,
-// BigDecimal productPrice) throws MyException {
+        model.addAttribute("product", product);
+        model.addAttribute("productImages", productImages);
 
-// // Guardar el producto y las imágenes
-// productService.createProduct(archivos, productName, productDescription,
-// productStock, productPrice);
+        return "productos/product_detail"; // Nombre de la vista Thymeleaf
+    }
 
-// return "redirect:/productos";
-// }
-// }
+}

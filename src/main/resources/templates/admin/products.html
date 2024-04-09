@@ -16,6 +16,7 @@
         <th>Precio</th>
         <th>Fecha de alta</th>
         <th>Fotos</th>
+        <th>Editar</th>
         <th>Eliminar</th>
         <!-- Agrega más columnas según sea necesario -->
       </tr>
@@ -23,7 +24,12 @@
     <tbody>
       <!-- Iterar sobre la lista de productos -->
       <tr th:each="product : ${products}">
-        <td th:text="${product.productId}"></td>
+        <td>
+          <!-- Enlace que lleva a la página del producto -->
+          <a th:href="@{'/productos/product/' + ${product.productId}}">
+            <span th:text="${product.productId}"></span>
+          </a>
+        </td>
         <td th:text="${product.productName}"></td>
         <td th:text="${product.productDescription}"></td>
         <td th:text="${product.productStock}"></td>
@@ -31,23 +37,28 @@
         <td th:text="${product.fechaAlta}"></td>
         <td>
           <!-- Verifica si el producto tiene imágenes asociadas -->
-          <div th:if="${product.productImages != null}">
-            <!-- Iterar sobre las imágenes del producto -->
-            <div th:each="image : ${product.productImages}">
-              <!-- Mostrar la imagen -->
-              <img th:src="@{'/imagen/producto/' + ${product.productId} + '/imagen/' + ${image.id}}"
-                th:alt="${image.imageName}" class="img-fluid rounded-circle" style="max-width: 50px; height: auto" />
-              <span th:text="${image.id}"></span>
-            </div>
+          <!-- <div th:if="${product.productImages != null}"> -->
+          <!-- Iterar sobre las imágenes del producto -->
+          <div th:each="image : ${product.productImages}">
+            <!-- Mostrar la imagen -->
+            <img th:src="@{'/img/' + ${image.imageName}}" th:alt="${image.imageName}" class="img-fluid rounded-circle"
+              style="max-width: 50px; height: auto" />
+            <span th:text="${image.id}"></span>
+          </div>
           </div>
           <!-- Si no hay imágenes asociadas, mostrar un mensaje -->
           <span th:unless="${product.productImages != null}">Sin foto</span>
         </td>
-
+        <td>
+          <!-- Enlace para redirigir a la página de actualización del producto -->
+          <a th:href="@{'/admin/product/' + ${product.productId}}">
+            <button type="button" class="btn fa-regular fa-pen-to-square"></button>
+          </a>
+        </td>
 
         <td>
           <!-- Formulario para eliminar el producto -->
-          <form th:action="@{'/admin/producto/eliminar/' + ${product.productId}}" method="post">
+          <form th:action="@{'/admin/product/eliminar/' + ${product.productId}}" method="post">
             <button type="submit" class="btn fa-solid fa-trash-can"></button>
           </form>
         </td>

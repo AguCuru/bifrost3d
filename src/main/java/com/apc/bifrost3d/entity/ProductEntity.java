@@ -38,6 +38,7 @@ public class ProductEntity {
     protected boolean productEstado;
     @Temporal(TemporalType.DATE)
     protected Date fechaAlta;
+    protected Date fechaModificacion;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImageEntity> productImages;
 

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{/fragments/head :: head}"></head>
+
+<body>
+  <header th:replace="~{/fragments/header :: header}"></header>
+  <h1>Detalle de Producto</h1>
+
+  <!-- Mostrar detalles del producto -->
+  <h2 th:text="${product.productName}"></h2>
+  <p th:text="${product.productDescription}"></p>
+  <p th:text="${product.productPrice}"></p>
+  <!-- Mostrar imágenes del producto -->
+  <h3>Imágenes del Producto</h3>
+  <div th:each="image : ${productImages}">
+    <img th:src="@{'/img/' + ${image.imageName}}" th:alt="${image.imageName}" />
+    <!-- No trae correctamente las imagenes -->
+    <!-- <img th:src="@{/imagen/producto/__${image.product.productId}__/__${image.id}__/imagen}" alt=""> -->
+  </div>
+  <footer th:replace="~{/fragments/footer :: footer}"></footer>
+</body>
+
+</html>

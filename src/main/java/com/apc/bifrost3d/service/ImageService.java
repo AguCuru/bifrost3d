@@ -35,7 +35,26 @@ public class ImageService {
         return null;
     }
 
+    public List<ImageEntity> guardarImagenes(List<MultipartFile> archivos) throws MyException {
+        List<ImageEntity> imagenesGuardadas = new ArrayList<>();
+        try {
+            for (MultipartFile archivo : archivos) {
+                if (archivo != null && !archivo.isEmpty()) {
+                    ImageEntity imagen = new ImageEntity();
+                    imagen.setMime(archivo.getContentType());
+                    imagen.setImageName(archivo.getOriginalFilename());
+                    imagen.setContenido(archivo.getBytes());
+                    imagenesGuardadas.add(imageRepository.save(imagen));
+                }
+            }
+        } catch (IOException e) {
+            throw new MyException("Error al guardar las imágenes", e);
+        }
+        return imagenesGuardadas;
+    }
+
     /* Guarda lista de imagenes de un Producto */
+    @Transactional
     public List<ImageEntity> guardarImageProduct(String productId, List<MultipartFile> archivos) throws MyException {
         List<ImageEntity> imagenesGuardadas = new ArrayList<>();
         try {
@@ -52,6 +71,7 @@ public class ImageService {
         return imagenesGuardadas;
     }
 
+    @Transactional
     public ImageEntity actualizar(MultipartFile archivo, String idImagen) throws MyException {
         if (archivo != null) {
             try {
@@ -71,6 +91,19 @@ public class ImageService {
             }
         }
         return null;
+    }
+
+    @Transactional
+    public List<ImageEntity> convertToImageEntities(MultipartFile[] archivos) throws IOException {
+        List<ImageEntity> imageEntities = new ArrayList<>();
+        for (MultipartFile archivo : archivos) {
+            ImageEntity imageEntity = new ImageEntity();
+            imageEntity.setMime(archivo.getContentType());
+            imageEntity.setImageName(archivo.getOriginalFilename());
+            imageEntity.setContenido(archivo.getBytes());
+            imageEntities.add(imageEntity);
+        }
+        return imageEntities;
     }
 
     @Transactional(readOnly = true)
