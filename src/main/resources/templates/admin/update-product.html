@@ -9,8 +9,8 @@
   <main>
     <div class="container">
       <h2 class="mt-5 mb-4">Actualizar Producto</h2>
-      <form action="@{/admin/product/update/${product.productId}}" method="post" enctype="multipart/form-data">
-        <input hidden th:value="${product.productId}" name="productId">
+      <form th:action="@{/admin/product/update/${product.productId}}" method="POST" enctype="multipart/form-data">
+        <!-- <input hidden th:value="${product.productId}" name="productId"> -->
         <div class="mb-3">
           <label for="productName" class="form-label">Nombre del Producto:</label>
           <input type="text" class="form-control" id="productName" name="productName" th:value="${product.productName}"
@@ -19,7 +19,7 @@
         <div class="mb-3">
           <label for="productDescription" class="form-label">Descripción del Producto:</label>
           <textarea class="form-control" id="productDescription" name="productDescription" rows="3" required
-            th:text="${product.productDescription}"></textarea>
+            th:value="${product.productDescription}"></textarea>
         </div>
         <div class="mb-3">
           <label for="productStock" class="form-label">Stock del Producto:</label>

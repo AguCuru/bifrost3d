@@ -26,6 +26,7 @@ public class ProductService {
     private ImageRepository imageRepository;
 
     public ProductEntity createProduct(
+            String productId,
             String productName,
             String productDescription,
             Integer productStock,
@@ -51,7 +52,7 @@ public class ProductService {
     // Otros métodos de servicio para manejar productos
 
     /* Actualiza datos usuario */
-    public ProductEntity updateProduct(
+    public void updateProduct(
             String productId,
             String productName,
             String productDescription,
@@ -59,36 +60,44 @@ public class ProductService {
             BigDecimal productPrice,
             List<ImageEntity> productImages) throws MyException {
         // Verificar si el producto existe
-        ProductEntity product = productRepository.findById(productId).orElse(null);
-        if (product == null) {
+        Optional<ProductEntity> optionalProduct = productRepository.findByProductId(productId);
+        if (optionalProduct.isPresent()) {
+            ProductEntity product = optionalProduct.get();
+            // Actualizar los campos del producto con los nuevos valores
+            product.setProductName(productName);
+            product.setProductDescription(productDescription);
+            product.setProductStock(productStock);
+            product.setProductPrice(productPrice);
+            product.setProductImages(productImages);
+            // Establecer la fecha de modificación
+            product.setFechaModificacion(new Date());
+
+            // Actualizar la relación inversa en las imágenes
+            for (ImageEntity image : productImages) {
+                image.setProduct(product);
+            }
+            // Guardar el producto actualizado en la base de datos
+            productRepository.save(product);
+        } else {
             throw new MyException("El producto con el ID " + productId + " no se encontró.", null);
         }
-
-        // Actualizar los campos del producto con los nuevos valores
-        product.setProductName(productName);
-        product.setProductDescription(productDescription);
-        product.setProductStock(productStock);
-        product.setProductPrice(productPrice);
-        product.setProductImages(productImages);
-        // Establecer la fecha de modificación
-        product.setFechaModificacion(new Date());
-
-        // Actualizar la relación inversa en las imágenes
-        for (ImageEntity image : productImages) {
-            image.setProduct(product);
-        }
-
-        // Guardar los cambios en el producto
-        return productRepository.save(product);
     }
 
     public List<ProductEntity> productList() {
         return productRepository.findAll();
     }
 
+    // public ProductEntity getProductById(String productId) {
+    // Optional<ProductEntity> optionalProduct =
+    // productRepository.findById(productId);
+    // return optionalProduct.orElse(null); // Retorna el Usuario si está presente,
+    // o null si no lo está
+    // }
+
+    @SuppressWarnings("")
     public ProductEntity getProductById(String productId) {
-        Optional<ProductEntity> optionalProduct = productRepository.findById(productId);
-        return optionalProduct.orElse(null); // Retorna el Usuario si está presente, o null si no lo está
+        Optional<ProductEntity> optionalUsuario = productRepository.findByProductId(productId);
+        return optionalUsuario.orElse(null); // Retorna el Usuario si está presente, o null si no lo está
     }
 
     public List<ImageEntity> getProductImages(String productId) {

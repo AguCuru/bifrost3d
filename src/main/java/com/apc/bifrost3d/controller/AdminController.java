@@ -18,6 +18,7 @@ import com.apc.bifrost3d.entity.ImageEntity;
 import com.apc.bifrost3d.entity.ProductEntity;
 import com.apc.bifrost3d.entity.UserEntity;
 import com.apc.bifrost3d.exception.MyException;
+import com.apc.bifrost3d.repository.ProductRepository;
 import com.apc.bifrost3d.service.AdminService;
 import com.apc.bifrost3d.service.ImageService;
 import com.apc.bifrost3d.service.ProductService;
@@ -32,12 +33,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class AdminController {
 
     @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
     private AdminService adminService;
 
     @Autowired
     private ProductService productService;
     @Autowired
-
     private ImageService imageService;
 
     @GetMapping("/dashboard")
@@ -116,12 +119,17 @@ public class AdminController {
     }
 
     @GetMapping("/product/{productId}")
-    public String updateProduct(Model model, String productId) {
-        ProductEntity product = productService.getProductById(productId);
+    public String updateProduct(ModelMap model, @PathVariable String productId) {
+        try {
+            ProductEntity product = productService.getProductById(productId);
 
-        model.addAttribute("product", product);
+            model.put("product", product);
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Error, producto no encontrado: " + e.getMessage());
 
-        return "admin/productos";
+        }
+
+        return "admin/update-product";
     }
 
     @PostMapping("/product/update/{productId}")
